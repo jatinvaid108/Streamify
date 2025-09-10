@@ -33,7 +33,7 @@ export async function signup(req,res){
         })          // jbb newUser bana then vo save hoga in and password in hashed form (see in User.js) bcrypt; Then following
 
         //TODO: Create the User IN STREAM as well
-        const token =jwt.sign({userId:newUser._id},process.env.JWT_SECRET_KEY,{
+        const token =jwt.sign({userId: newUser._id},process.env.JWT_SECRET_KEY,{
             expiresIn:"7d"
         })
 
@@ -53,9 +53,39 @@ export async function signup(req,res){
 }
 
 export async function login(req,res){
-    res.send("login Route");
+    try{
+        const {email,password}=req.body;
+        if(!email || !password){
+            return res.status(400).json({message:"All fields are required"});
+        }
+
+        const user=await User.findOne({email});
+        if(!user) return res.status(401).json({message:"Invalid email or password"});
+
+        const isPasswordCorrect=await user.matchPassword(password);
+        if(!isPasswordCorrect) return res.status(401).json({message: "Invalid email or password"});
+
+         const token =jwt.sign({userId: user._id},process.env.JWT_SECRET_KEY,{
+            expiresIn:"7d"
+        })
+
+        res.cookie("jwt",token,{
+            maxAge:7*24*60*60*1000,
+            httpOnly:true, //prevent XSS attacks,
+            sameSite:"strict", // prevent CSRF attacks
+            secure: process.env.NODE_ENV==='production'
+        });
+
+        res.status(200).json({success:true,user});
+
+    }
+    catch(error){
+        console.log("Error in Login controller",error.message);
+        res.status(500).json({message: "Internal Server Error"});
+    }
 }
 
 export function logout(req,res){
-    res.send("Logout Route");
+    res.clearCookie("jwt");
+    res.status(200).json({success:true , message:"Logout Sccessfull! "});
 }
