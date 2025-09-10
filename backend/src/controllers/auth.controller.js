@@ -1,3 +1,4 @@
+import {upsertStreamUser} from "../lib/stream.js";
 import User from "../models/User.js";
 import jwt from "jsonwebtoken";
 
@@ -32,7 +33,20 @@ export async function signup(req,res){
             profilePic:randomAvatar,
         })          // jbb newUser bana then vo save hoga in and password in hashed form (see in User.js) bcrypt; Then following
 
-        //TODO: Create the User IN STREAM as well
+        //TODO: Create the User IN STREAM as well --> DOne
+
+        try {
+            await upsertStreamUser({
+            id: newUser._id.toString(),
+            name: newUser.fullName,
+            image: newUser.profilePic || "",
+        });
+        console.log(`Stream user created for ${newUser.fullName}`);
+        } 
+        catch (error) {
+          console.error("Error creating Stream User",error);  
+        }
+
         const token =jwt.sign({userId: newUser._id},process.env.JWT_SECRET_KEY,{
             expiresIn:"7d"
         })
