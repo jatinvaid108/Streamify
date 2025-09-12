@@ -41,7 +41,7 @@ const userSchema= new mongoose.Schema({
     },
 
     //friend id ki form mein store honge in array
-    friend:[
+    friends:[
         {
             type:mongoose.Schema.Types.ObjectId,
             ref:"User",
