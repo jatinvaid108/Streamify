@@ -1,6 +1,9 @@
 import React, { useState } from "react";
 import { ShipWheelIcon } from "lucide-react";
 import { Link } from "react-router-dom"; // required for <Link>
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { axiosInstance } from "../lib/axios";
+import { signup } from "../lib/api";
 
 const SignUpPage = () => {
   const [signupData, setSignupData] = useState({
@@ -9,10 +12,17 @@ const SignUpPage = () => {
     password: "",
   });
 
+   const queryClient = useQueryClient();
+  const {mutate:signupMutation,isPending,error,} = useMutation({
+    mutationFn: signup,   //Calling signup method from api.js in lib with signupdata to make it look more efficient and clean 
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["authUser"] }),
+  });
+  
+    
+
   const handleSignup = (e) => {
     e.preventDefault();
-    console.log("Signup form submitted:", signupData); // temporary
-    // Later: add signupMutation here
+    signupMutation(signupData);
   };
 
   return (
@@ -30,6 +40,14 @@ const SignUpPage = () => {
               Streamify
             </span>
           </div>
+
+          {/* ERROR MESSAGE IF ANY */}
+          {error && (
+            <div className="alert alert-error mb-4">
+              <span>{error.response.data.message}</span>
+            </div>
+          )}
+
 
           <div className="w-full">
             <form onSubmit={handleSignup}>
@@ -112,7 +130,7 @@ const SignUpPage = () => {
 
               {/* SUBMIT BUTTON */}
               <button className="btn btn-primary w-full mt-4" type="submit">
-                Create Account
+                {isPending ? "Signing up..." : "Create Account"}
               </button>
 
               <div className="text-center mt-4">
