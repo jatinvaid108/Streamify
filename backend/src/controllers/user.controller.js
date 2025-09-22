@@ -1,5 +1,5 @@
 import User from "../models/User.js";
-import FriendRequest from "../models/User.js";
+import FriendRequest from "../models/FriendRequest.js";
 
 export async function getRecommendedUsers(req,res){
     try{
@@ -9,7 +9,7 @@ export async function getRecommendedUsers(req,res){
         const getRecommendedUsers=await User.find({
             $and:[
                 {_id: {$ne: currentUserId}}, //exclude current user
-                {$id: {$nin: currentUser.friends}}, // exclude current user's friends
+                {_id: {$nin: currentUser.friends}}, // exclude current user's friends
                 {isOnboarded:true}
             ]
         })
@@ -50,7 +50,7 @@ export async function sendFriendRequest(req,res){
         }
 
         //check if user is already friends
-        if(recipient.friends.included(myId)){
+        if(recipient.friends.includes(myId)){
             return res.status(400).json({message: "You are already Friends with this user"});
         }
         //check if a req already exists
