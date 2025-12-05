@@ -1,117 +1,61 @@
-🚀 Streamify — Real-Time Chat & Video Calling Platform
+# 🚀 Streamify — Real-Time Chat & Video Calling
 
-A modern MERN stack social & language exchange platform featuring real-time chat, video calls, onboarding flow, friend system, theme customization, and secure authentication — powered by Stream Chat & Stream Video APIs.
+Streamify is a MERN-based social & language-exchange app with real-time chat, video calls, friends system, onboarding flow, and theme customization.  
+Powered by **Stream Chat** and **Stream Video** APIs.
 
-⭐ Key Features
-🔐 Authentication & Security
+---
 
-JWT authentication using HTTP-only cookies
+## ⭐ Features
 
-Encrypted password hashing (bcrypt)
+### 🔐 Auth & Security
+- JWT authentication (HTTP-only cookies)
+- Secure password hashing (bcrypt)
+- Protected backend routes & frontend pages
+- Onboarding required before accessing app
 
-Protected backend API routes
+### 👤 User Onboarding
+- Avatar upload or auto-generated avatar
+- Bio + language selection
+- Multi-step onboarding UI
 
-Protected frontend routes based on onboarding & login state
+### 👥 Friends System
+- Send, accept, reject friend requests
+- Friend-only chat & call permissions
+- Recommended users *(future enhancement)*
 
-Automatic redirect if the user is not onboarded
+### 💬 Real-Time Chat (Stream Chat)
+- 1:1 & group messaging
+- Typing indicators, reactions, read receipts
+- File & image uploads
+- Online/offline presence
+- Message history stored on Stream servers
 
-👤 User Onboarding
+### 🎥 Video Calls (Stream Video)
+- High-quality 1:1 & group video calls
+- Screen sharing
+- Camera & microphone toggles
+- Real-time reactions
+- Stream handles WebRTC layer
 
-Upload or auto-generate avatar
+### 🎨 Themes & UI
+- 32+ customizable themes
+- Persistent theme storage
+- TailwindCSS + Vite build system
+- Responsive modern UI
 
-Select languages + user bio
+---
 
-Onboarding required before accessing the app
+## 🏗 Tech Stack
 
-Clean profile setup page
+**Frontend:** React (Vite), TailwindCSS, TanStack Query, Zustand, Axios, Stream Chat SDK, Stream Video SDK  
+**Backend:** Node.js, Express, MongoDB Atlas, Mongoose, JWT, Bcrypt, Stream Server SDK
 
-👥 Friends System
+---
 
-Send friend requests
+## ⚙️ Setup
 
-Accept / Reject requests
-
-Only friends can chat or call
-
-Recommendations for new connections
-
-Notification-like UI for requests
-
-💬 Real-Time Chat (Stream Chat API)
-
-1:1 & group chat channels
-
-Real-time delivery (no refresh needed)
-
-Reactions, typing indicators, presence
-
-Image uploads & attachments
-
-Read receipts
-
-Online/offline status
-
-Reliable + scalable (powered by Stream infrastructure)
-
-🎥 Video Calling (Stream Video API)
-
-One-to-one calls
-
-Group video calls
-
-Screen sharing
-
-Reactions & call controls
-
-Auto-managed WebRTC signaling by Stream
-
-High-quality, low-latency call experience
-
-🎨 UI / Themes
-
-32+ beautiful themes
-
-Persistent theme storage
-
-Fully responsive design
-
-Clean & modern components using TailwindCSS
-
-🏗 Tech Stack
-Frontend
-
-React + Vite
-
-Tailwind CSS
-
-TanStack Query
-
-Axios
-
-Zustand (Theme Store)
-
-Stream Chat SDK
-
-Stream Video SDK
-
-Backend
-
-Node.js
-
-Express.js
-
-MongoDB Atlas + Mongoose
-
-JWT Authentication
-
-Stream Server SDK
-
-Bcrypt
-
-
-⚙️ Setup Instructions
-1️⃣ Clone Repo
-
+### 1️⃣ Clone
+```sh
 git clone https://github.com/jatinvaid108/Streamify
 cd Streamify
 
@@ -119,119 +63,121 @@ cd Streamify
 cd backend
 npm install
 
-Create .env in /backend:
+Create .env:
 PORT=5000
 MONGO_URI=your_mongodb_url
 JWT_SECRET=your_secret
-STREAM_API_KEY=your_stream_key
-STREAM_API_SECRET=your_stream_secret
-STREAM_APP_ID=your_stream_app_id
+STREAM_API_KEY=your_key
+STREAM_API_SECRET=your_secret
+STREAM_APP_ID=your_app_id
 
-Start Backend:
+Run backend:
 npm run dev
 
-
-Backend runs at:
-👉 http://localhost:5000
+Runs at: http://localhost:5000
 
 🖥 Frontend Setup
 cd frontend
 npm install
 
-Create .env in /frontend:
+Create .env:
 VITE_BACKEND_URL=http://localhost:5000
-VITE_STREAM_API_KEY=your_stream_key
+VITE_STREAM_API_KEY=your_key
 
-Start Frontend:
+Run frontend:
 npm run dev
 
+Runs at: http://localhost:5173
 
-Frontend runs at:
-👉 http://localhost:5173
+🔌 Stream API Setup
 
-🔌 Stream API Configuration
-1️⃣ Create an account
+Create a Stream account → https://getstream.io
 
-https://getstream.io/
+Create a Chat + Video App
 
-2️⃣ Create a Chat + Video App
+Add your Key, Secret, App ID to backend .env
 
-Copy the following into backend .env:
+Backend (lib/stream.js) handles:
 
-STREAM_API_KEY=
-STREAM_API_SECRET=
-STREAM_APP_ID=
+Creating Stream users
 
-3️⃣ Backend (lib/stream.js)
+Generating tokens
 
-Handles:
+Creating channels
 
-Stream user creation
+Initializing call sessions
 
-Token generation
-
-Channel creation
-
-Video call session setup
-
-4️⃣ Frontend
-
-Connects via:
-
+Frontend imports:
 import { StreamChat } from "stream-chat";
 import { StreamVideoClient } from "@stream-io/video-react-sdk";
 
 🛡 Protected Routes
-Backend Protected Routes:
+Backend
 /api/users/*
 /api/chat/*
 /api/calls/*
 
 
-Middleware checks:
+Protected with:
 
-JWT validity
+JWT authentication
 
-User onboarding status
+User verification middleware
 
-Frontend Route Protection:
+Onboarding enforcement
 
-Redirects unauthenticated users to Login
+Frontend
 
-Redirects non-onboarded users to Onboarding
+Redirects unauthenticated users to login
 
-📡 Key API Endpoints
+Redirects incomplete profiles to onboarding
+
+📡 API Endpoints
+
 Auth
+
 POST /api/auth/signup
+
 POST /api/auth/login
+
 POST /api/auth/logout
-GET  /api/auth/me
+
+GET /api/auth/me
 
 Users
+
 POST /api/users/:id/friend-request
+
 POST /api/users/friend-request/:requestId/accept
-GET  /api/users/me
+
+GET /api/users/me
 
 Chat
+
 POST /api/chat/create-channel
+
 POST /api/chat/token
 
 Calls
+
 POST /api/calls/initiate
 
-🌐 Deployment Ready
+🌐 Deployment
 
 Frontend: Vercel / Netlify
+Backend: Render / Railway / VPS
+Database: MongoDB Atlas
+Real-time: Stream Chat + Stream Video
 
-Backend: Render / Railway
+Supports:
 
-Support for environment variables
+CORS
 
-Handles CORS + cookies correctly
+Cookies
 
-Fully supports Stream APIs in production
+Environment variables
 
-📁 Simplified Project Structure
+📁 File Structure
 backend/
   controllers/
   models/
@@ -251,4 +197,9 @@ frontend/
 ❤️ Author
 
 Jatin Vaid
-Full-Stack Developer | MERN | Real-Time Apps | System Design
+Full-Stack Developer — MERN • Real-Time Systems • Realtime Apps
+
+⭐ Support
+
+If this project helped you, please ⭐ the repo.
+Your support motivates future updates! 😊
